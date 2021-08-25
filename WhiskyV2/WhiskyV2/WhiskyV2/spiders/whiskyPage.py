@@ -6,7 +6,9 @@ from scrapy.loader import ItemLoader
 class wSpider(scrapy.Spider):
     name = 'whiskyV3'
     #allowed_domains = ['whiskyshop.com']
-    start_urls = ['https://www.whiskyshop.com/scotch-whisky', ]
+    start_urls = ['https://www.whiskyshop.com/scotch-whisky',
+                  'https://www.whiskyshop.com/spirits',
+                  'https://www.whiskyshop.com/world-whiskies']
 
     def _parse(self, response):
         category = response.css('span.base::text').get()
@@ -19,12 +21,9 @@ class wSpider(scrapy.Spider):
             wv2.add_css('link', 'a.product-item-link::attr(href)')
             wv2.add_value('listed', webpage)
             yield wv2.load_item()
-
-            siguiente = response.css('a.action.next').attrib['href']
-            if siguiente is not None:
-                yield response.follow(siguiente, callback=self._parse)
-            else:
-                if response.url != 'https://www.whiskyshop.com/spirits':
-                    yield response.follow('https://www.whiskyshop.com/spirits', callback=self._parse)
-                else:
-                    yield response.follow('https://www.whiskyshop.com/world-whiskies', callback=self._parse)
+            try:
+                siguiente = response.css('a.action.next').attrib['href']
+                if siguiente is not None:
+                    yield response.follow(siguiente, callback=self._parse)
+            except Exception:
+                pass  # esta excepcion se genera porque no encuetra el boton de pagina siguiente que se esta asignando
