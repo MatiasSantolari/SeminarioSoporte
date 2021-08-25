@@ -14,7 +14,7 @@ class MercadoLibreCrawler(CrawlSpider):
     custom_settings = {
         'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
-        'CLOSESPIDER_PAGECOUNT': 80
+        'CLOSESPIDER_PAGECOUNT': 20
     }
     download_delay = 1
 
@@ -28,7 +28,8 @@ class MercadoLibreCrawler(CrawlSpider):
             LinkExtractor(allow=r'/_Desde_\d+'), follow=True),
 
         Rule(  # REGLA #2 => VERTICALIDAD AL DETALLE PRODUCTOS
-            LinkExtractor(allow=r'pdp_filters=category:MLA1055#searchVariation=MLA'),
+            LinkExtractor(
+                allow=r'pdp_filters=category:MLA1055#searchVariation=MLA'),
             follow=True, callback='parse_items'),
     )
 
